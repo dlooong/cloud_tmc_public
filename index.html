@@ -1,0 +1,278 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TMC decoder Visualized Tools</title>
+    <!-- style sheet -->
+    <link rel="stylesheet" href="jquery-ui-1.12.1/jquery-ui.css">
+    <link rel="stylesheet" href="tablesorter/css/theme.jui.css">
+    <!-- javascript -->
+    <script src="jquery-ui-1.12.1/external/jquery/jquery.js"></script>
+    <script src="jquery-ui-1.12.1/jquery-ui.js"></script>
+    <script src="jquery_autosize/jquery.autosize.js"></script>
+    <script src="tablesorter/js/jquery.tablesorter.js"></script>
+    <script src="tablesorter/js/jquery.tablesorter.widgets.js"></script>
+    <script>
+        $( function() {
+            $( "#tabs" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
+            $( "#tabs li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
+            $(".button_open_file").button({
+                icon: "ui-icon-folder-open",
+                showLabel: false
+            });
+            $(".submit").button();
+            
+            $(".tablesorter").tablesorter({
+                theme : 'jui',
+                header: {'.sorter-false': {sorter: false}},
+                headerTemplate : '{content} {icon}',
+                widgets : ['uitheme', 'zebra'],
+                widgetOptions : {
+                    zebra   : ["even", "odd"],
+                }
+            });
+
+            $(".tablesorter-filter").tablesorter({
+                theme : 'jui',
+                header: {'.sorter-false': {sorter: false}},
+                headerTemplate : '{content} {icon}',
+                widgets : ['uitheme', 'filter', 'zebra'],
+                widgetOptions : {
+                    zebra   : ["even", "odd"],
+                }
+            });
+
+
+            $(".control-group").controlgroup();
+
+            $("#accordion").accordion({
+                heightStyle: "fill"
+            });
+          //$( "textarea").autosize();
+        } );
+    </script>
+    <style>
+        body {
+            font-size: 0.9em;
+        }
+
+        #header {
+            width: 100%;
+            height: 2.7em;
+            vertical-align: top;
+            background-color: black;
+            padding: .5em;
+        }
+        .ui-tabs-vertical { width: 98%; }
+        .ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 16%; }
+        .ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .2em 0; }
+        .ui-tabs-vertical .ui-tabs-nav li a { display:block; }
+        .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; }
+        .ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: right; width: 80%;}
+
+        .ui-widget-header { padding: 0.2em; }
+
+        .navigation {font-size: 1.1em}
+
+        textarea {
+            border:2px solid #ccc;
+            padding: 10px;
+            vertical-align: top;
+            width: 60%;
+        }
+        
+        .label-align { width: 6em; display: inline-block}
+        .button_open_file {width: 2em; height: 2em}
+
+        #message-input {
+            height: 30em;
+            width: 40%;
+            float: left;
+            background-color: transparent;
+        }
+
+        #message-explanation{
+            height: 21.5em;
+            width: 50%;
+            float: left;
+            background-color: transparent;
+        }
+
+        #message-input-text {
+            width: 70%;
+            height: 25em;
+        }
+
+        .container {
+            width: 100%;
+            display: block;
+        }
+
+        #container-top {
+            height: 30em;
+            background-color: transparent;
+        }
+
+        #container-bottom {
+            clear: both;
+            background-color: transparent;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="header">
+        <div id="telenav-log">
+            <img src="http://www.telenav.com/include/pg-inc/images/logo.png" border="0">
+        </div>
+    </div>
+	<div id="tabs">
+		<ul class="navigation">
+			<li><a href="#tabs-1">Configuration</a></li>
+			<li><a href="#tabs-2">Station List</a></li>
+			<li><a href="#tabs-3">8A Groups</a></li>
+        </ul>
+
+        <div id="tabs-1">
+            <h2>Configure Traffic Decoder</h2>
+            <p>
+               <div class="label-align">
+                   <span>provider list</span>
+                </div>
+                <textarea rows="1" id="text_provider_list"></textarea>&nbsp
+                <button class="button_open_file"></button>
+            </p>
+            <p>
+                <div class="label-align">
+                    <span>traffic DB</span>
+                </div>
+                <textarea rows="1" id="text_traffic_db"></textarea>&nbsp
+                <button class="button_open_file"></button>
+            </p>
+            <p><button id="submit-config" class="submit">Submit</button></p>
+            <p></p>
+        </div>
+        <div id="tabs-2">
+            <h2>Station List</h2>
+            <h3>Provilder list</h3>
+            <table id="provider-list" class="tablesorter">
+                <thead>
+                    <tr>
+                        <th>pid</th>
+                        <th>cc</th>
+                        <th>ltn</th>
+                        <th>sid</th>
+                        <th>deprecate</th>
+                        <th>paid</th>
+                        <th>psn</th>
+                        <th class="sorter-false">tuned</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            
+            <h3>Temporary station list</h3>
+            <table id="memory-station" class="tablesorter">
+                <thead>
+                    <tr>
+                        <th>pid</th>
+                        <th>cc</th>
+                        <th>ltn</th>
+                        <th>ltnbe</th>
+                        <th>sid</th>
+                        <th>ltn type</th>
+                        <th>sid type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+            <h3>Receive system information</h3>
+            <div class="control-group">
+                <p>
+                <label for="pi">program id</label>
+                <input id="pi" type="text"/>
+                <label for="pi">location table number</label>
+                <input id="ltn" type="text"/>
+                <label for"pi">service id</label>
+                <input id="sid" type="text"/>
+                <label for="from_admingrp"> from admin group</label>
+                <input id="from_admingrp" name="from_admingrp" type="checkbox"/>
+                </p>
+                <p><button id="submit-system" class="submit">Submit</button></p>
+            </div>
+
+            <h3>Receive program service name</h3>
+            <div class="control-group">
+                <p>
+                <label for="pi">program id</label>
+                <input id="pi" type="text"/>
+                <label for="pi">ps segment</label>
+                <input id="ps" type="text"/>
+                </p>
+                <p><button id="submit-ps" class-"submit">Submit</button></p>
+            </div>
+        </div>
+        <div id="tabs-3">
+            <h2>Parse 8A messages</h2>
+            <div id="container-top" class="container">
+                <div id="message-input">
+                    <h3>8A groups</h2> 
+                    <textarea id="message-input-text"></textarea>
+                </div>
+                <div id="message-explanation">
+                    <h3> Message insight</h3>
+                    <div id="accordion">
+                        <h4>Genernal</h4>
+                        <div>
+                            <p>Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.</p>
+                        </div>
+                        <h4>Fields</h4>
+                        <div>
+                            <p>Sed non urna. Donec et ante. Phasellus eu ligula. Vestibulum sit amet purus. Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor velit, faucibus interdum tellus libero ac justo. Vivamus non quam. In suscipit faucibus urna. </p>
+                        </div>
+                        <h4>Multi-group buffer</h4>
+                        <div>
+                            <p>Nam enim risus, molestie et, porta ac, aliquam ac, risus. Quisque lobortis. Phasellus pellentesque purus in massa. Aenean in pede. Phasellus ac libero ac tellus pellentesque semper. Sed ac felis. Sed commodo, magna quis lacinia ornare, quam ante aliquam nisi, eu iaculis leo purus venenatis dui. </p>
+                            <ul>
+                                <li>List item one</li>
+                                <li>List item two</li>
+                                <li>List item three</li>
+                            </ul>
+                        </div>
+                        <h4>Section 4</h4>
+                        <div>
+                            <p>cras dictum. pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; aenean lacinia mauris vel est. </p><p>suspendisse eu nisl. nullam ut libero. integer dignissim consequat lectus. class aptent taciti sociosqu ad litora torquent per conubia nostra, per
+                        inceptos himenaeos. </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="container-bottom" class="container">
+                <h3>Incident</h3>
+                <table id="incident" class="tablesorter-filter">
+                    <thead>
+                        <tr>
+                            <th>sid</th>
+                            <th>cc</th>
+                            <th>received</th>
+                            <th>ltn</th>
+                            <th>event</th>
+                            <th>extent</th>
+                            <th>location_code</th>
+                            <th>direction</th>
+                            <th>expires</th>
+                            <th>free_form_data</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+	</div>
+</body>
+</html>
